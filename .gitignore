@@ -1,0 +1,9 @@
+# BEAM
+*.beam
+
+# Errors
+*.dump
+
+# Editor
+.vscode
+.idea
