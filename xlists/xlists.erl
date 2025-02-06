@@ -1,7 +1,7 @@
 %% List operations.
 -module(xlists).
 
--export([rem_duplicates/2, fill/2]).
+-export([rem_duplicates/2, fill/2, reverse/1]).
 
 %% rem_duplicates/2 removes all copies of an item from a list except the first occurrence.
 rem_duplicates(List, Elem) when is_list(List) -> rem_duplicates(List, Elem, false).
@@ -22,3 +22,10 @@ fill(Len, N) when is_integer(Len) -> fill(Len, N, []).
 fill(0, _, Acc) -> Acc;
 
 fill(Len, N, Acc) ->  fill(Len - 1, N, [ N | Acc]).
+
+%% reverse
+reverse(List) when is_list(List) -> reverse(List, []).
+
+reverse([], Acc) -> Acc;
+
+reverse([ Head | T ], Acc) -> reverse(T, [ Head | Acc ]).
