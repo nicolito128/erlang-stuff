@@ -1,14 +1,24 @@
 %% List operations.
 -module(xlists).
 
--export([rm_duplicates/1]).
+-export([rem_duplicates/2, fill/2]).
 
-rm_duplicates([]) -> [];
+%% rem_duplicates/2 removes all copies of an item from a list except the first occurrence.
+rem_duplicates(List, Elem) when is_list(List) -> rem_duplicates(List, Elem, false).
 
-rm_duplicates([ First | T ]) -> [ First | rm_duplicates(T, First)].
+rem_duplicates([], _, _) -> [];
 
-rm_duplicates([], _) -> [];
+rem_duplicates([ Same | T ], Same, false) -> [ Same | rem_duplicates(T, Same, true) ];
 
-rm_duplicates([ Same | T ], Same) -> rm_duplicates(T, Same);
+rem_duplicates([ Same | T ], Same, true) -> rem_duplicates(T, Same, true);
 
-rm_duplicates([ Next | T ], _) -> [ Next | rm_duplicates(T, Next) ].
+rem_duplicates([ Head | T ], Elem, FirstOccur) -> [ Head | rem_duplicates(T, Elem, FirstOccur) ].
+
+%% fill/2 creates a new list with the given Len filled with elements N.
+fill(Len, _) when Len =< 0 -> [];
+
+fill(Len, N) when is_integer(Len) -> fill(Len, N, []).
+
+fill(0, _, Acc) -> Acc;
+
+fill(Len, N, Acc) ->  fill(Len - 1, N, [ N | Acc]).
