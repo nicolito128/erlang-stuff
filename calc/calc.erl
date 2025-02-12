@@ -36,4 +36,7 @@ rpn("prod", Stack) -> [ lists:foldl(fun(X, Acc) -> X * Acc end, 1, Stack) | [] ]
 rpn(X, Stack) -> [ to_number(X) | Stack ].
 
 %% polish notation
-pn(S) -> rpn(string:reverse(S)).
+pn(S) ->
+    Tokens = string:tokens(S, " "),
+    [Res] = lists:foldl(fun rpn/2, [], lists:reverse(Tokens)),
+    Res.
