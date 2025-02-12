@@ -17,15 +17,23 @@ rpn(S) ->
     [Res] = lists:foldl(fun rpn/2, [], string:tokens(S, " ")),
     Res.
 
-rpn("+", [N1,N2|S]) -> [N2+N1|S];
-rpn("-", [N1,N2|S]) -> [N2-N1|S];
-rpn("*", [N1,N2|S]) -> [N2*N1|S];
-rpn("/", [N1,N2|S]) -> [N2/N1|S];
-rpn("^", [N1,N2|S]) -> [math:pow(N2,N1)|S];
-rpn("ln", [N|S])    -> [math:log(N)|S];
-rpn("log10", [N|S]) -> [math:log10(N)|S];
-rpn("sum", Stack) -> [lists:sum(Stack)|[]];
-rpn(X, Stack) -> [to_number(X)|Stack].
+rpn("+", [ N1,N2 | S ]) -> [ N2+N1 | S ];
+rpn("-", [ N1,N2 | S ]) -> [ N2-N1 | S ];
+rpn("*", [ N1,N2 | S ]) -> [ N2*N1 | S ];
+
+rpn("/", [ 0,_N2 | _S ] ) -> error(badarith);
+rpn("/", [ N1,N2 | S ] ) -> [ N2/N1 | S ];
+
+rpn("%", [ 0,_N2 | _S ] ) -> error(badarith);
+rpn("%", [ N1,N2 | S ] ) -> [ (N2 rem N1) | S ];
+
+rpn("^", [ N1,N2 | S ]) -> [ math:pow(N2,N1) | S ];
+rpn("ln", [ N | S ]) -> [ math:log(N) | S ];
+rpn("log10", [ N | S ]) -> [ math:log10(N) | S ];
+rpn("sum", Stack) -> [ lists:sum(Stack) | [] ];
+rpn("prod", Stack) -> [ lists:foldl(fun(X, Acc) -> X * Acc end, 1, Stack) | [] ];
+
+rpn(X, Stack) -> [ to_number(X) | Stack ].
 
 %% polish notation
 pn(S) -> rpn(string:reverse(S)).
