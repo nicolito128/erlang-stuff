@@ -38,5 +38,17 @@ rpn(X, Stack) -> [ to_number(X) | Stack ].
 %% polish notation
 pn(S) ->
     Tokens = string:tokens(S, " "),
-    [Res] = lists:foldl(fun rpn/2, [], lists:reverse(Tokens)),
+    [Res] = lists:foldl(fun pn/2, [], lists:reverse(Tokens)),
     Res.
+
+pn("-", [ N1,N2 | S ]) -> [ N1-N2 | S ];
+
+pn("/", [ _N1,0 | _S ] ) -> error(badarith);
+pn("/", [ N1,N2 | S ] ) -> [ N1/N2 | S ];
+
+pn("%", [ _N1,0 | _S ] ) -> error(badarith);
+pn("%", [ N1,N2 | S ] ) -> [ (N1 rem N2) | S ];
+
+pn("^", [ N1,N2 | S ]) -> [ math:pow(N1,N2) | S ];
+
+pn(X, Stack) -> rpn(X, Stack).
